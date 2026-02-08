@@ -23,6 +23,10 @@ class AlbumsViewModel(
     private val _uiState = MutableStateFlow<AlbumsUiState>(AlbumsUiState.Loading)
     val uiState: StateFlow<AlbumsUiState> = _uiState.asStateFlow()
 
+    init {
+        loadAlbums()
+    }
+
     fun loadAlbums() {
         viewModelScope.launch {
             _uiState.value = AlbumsUiState.Loading
