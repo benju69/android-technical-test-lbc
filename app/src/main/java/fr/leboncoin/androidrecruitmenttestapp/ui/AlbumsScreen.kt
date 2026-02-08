@@ -2,6 +2,7 @@ package fr.leboncoin.androidrecruitmenttestapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.scaffold.Scaffold
 import com.adevinta.spark.components.text.Text
 import com.adevinta.spark.components.progress.Spinner
@@ -67,10 +69,17 @@ fun AlbumsScreen(
                         .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
+                    Column(
                         modifier = Modifier.padding(16.dp),
-                        text = "Error: ${state.message}"
-                    )
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(text = "Error: ${state.message}")
+                        ButtonFilled(
+                            text = "Retry",
+                            onClick = { viewModel.loadAlbums() }
+                        )
+                    }
                 }
             }
         }
