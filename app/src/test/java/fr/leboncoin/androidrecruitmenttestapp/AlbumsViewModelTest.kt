@@ -1,10 +1,14 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
+import fr.leboncoin.data.local.dao.AlbumDao
+import fr.leboncoin.data.local.entity.AlbumEntity
 import fr.leboncoin.data.network.api.AlbumApiService
 import fr.leboncoin.data.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -21,6 +25,15 @@ class AlbumsViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
+    val fakeDao = object : AlbumDao {
+        override fun getAllAlbums(): Flow<List<AlbumEntity>> = flowOf(emptyList())
+        override suspend fun getAlbumById(id: Int): AlbumEntity? = null
+        override suspend fun insertAlbums(albums: List<AlbumEntity>) {}
+        override suspend fun clearAllAlbums() {}
+        override suspend fun getAlbumsCount(): Int = 0
+        override suspend fun getCacheTimestamp(): Long? = null
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -36,7 +49,7 @@ class AlbumsViewModelTest {
         val fakeService = object : AlbumApiService {
             override suspend fun getAlbums(): List<AlbumDto> = emptyList()
         }
-        val repository = AlbumRepository(fakeService)
+        val repository = AlbumRepository(fakeService, fakeDao)
 
         val viewModel = AlbumsViewModel(repository)
 
@@ -52,7 +65,7 @@ class AlbumsViewModelTest {
         val fakeService = object : AlbumApiService {
             override suspend fun getAlbums(): List<AlbumDto> = expectedAlbums
         }
-        val repository = AlbumRepository(fakeService)
+        val repository = AlbumRepository(fakeService, fakeDao)
         val viewModel = AlbumsViewModel(repository)
 
         advanceUntilIdle()
@@ -70,7 +83,7 @@ class AlbumsViewModelTest {
                 throw Exception(errorMessage)
             }
         }
-        val repository = AlbumRepository(fakeService)
+        val repository = AlbumRepository(fakeService, fakeDao)
         val viewModel = AlbumsViewModel(repository)
 
         advanceUntilIdle()
@@ -97,7 +110,7 @@ class AlbumsViewModelTest {
                 return successAlbums
             }
         }
-        val repository = AlbumRepository(fakeService)
+        val repository = AlbumRepository(fakeService, fakeDao)
         val viewModel = AlbumsViewModel(repository)
 
         advanceUntilIdle()
@@ -121,7 +134,7 @@ class AlbumsViewModelTest {
         val fakeService = object : AlbumApiService {
             override suspend fun getAlbums(): List<AlbumDto> = expectedAlbums
         }
-        val repository = AlbumRepository(fakeService)
+        val repository = AlbumRepository(fakeService, fakeDao)
 
         val viewModel = AlbumsViewModel(repository)
 
