@@ -136,3 +136,15 @@ abstract class AlbumDatabase : RoomDatabase()
 
 **Couverture** : ~95% de la logique UI et ViewModel
 
+## 4. Optimisations de performance
+
+### Performance actuelle du scroll
+
+L'application utilise déjà plusieurs bonnes pratiques pour optimiser le scroll :
+
+✅ **Implémentations performantes existantes** :
+- **Keys stables** : `items(items = albums, key = { album -> album.id })` - Crucial pour la réutilisation des vues
+- **AsyncImage avec Coil 3** : Chargement asynchrone des images avec cache intégré
+- **Crossfade** : Transition douce des images qui améliore l'UX
+- **Flow réactifs** : Mise à jour incrémentale de l'UI sans recharger toute la liste
+- **StateFlow** : Évite les recompositions inutiles grâce à `collectAsStateWithLifecycle()`
