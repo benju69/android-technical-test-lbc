@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,6 +27,7 @@ import fr.leboncoin.data.network.model.AlbumDto
 fun FavoritesScreen(
     viewModel: AlbumsViewModel,
     onItemSelected: (AlbumDto) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier,
 ) {
     val favorites by viewModel.favoriteAlbums.collectAsStateWithLifecycle()
@@ -36,6 +39,7 @@ fun FavoritesScreen(
             FavoritesList(
                 favorites = favorites,
                 paddingValues = paddingValues,
+                listState = listState,
                 onItemSelected = onItemSelected,
                 onToggleFavorite = { albumId -> viewModel.toggleFavorite(albumId) }
             )
@@ -71,10 +75,12 @@ private fun EmptyFavorites(paddingValues: PaddingValues) {
 private fun FavoritesList(
     favorites: List<AlbumDto>,
     paddingValues: PaddingValues,
+    listState: LazyListState,
     onItemSelected: (AlbumDto) -> Unit,
     onToggleFavorite: (Int) -> Unit
 ) {
     LazyColumn(
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = paddingValues,
     ) {
@@ -123,6 +129,7 @@ private fun FavoritesListPreview() {
                 )
             ),
             paddingValues = PaddingValues(0.dp),
+            listState = rememberLazyListState(),
             onItemSelected = {},
             onToggleFavorite = {}
         )

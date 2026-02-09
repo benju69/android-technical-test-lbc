@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,6 +30,7 @@ import fr.leboncoin.data.network.model.AlbumDto
 fun AlbumsScreen(
     viewModel: AlbumsViewModel,
     onItemSelected: (AlbumDto) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -42,6 +45,7 @@ fun AlbumsScreen(
                 AlbumsSuccess(
                     albums = state.albums,
                     paddingValues = paddingValues,
+                    listState = listState,
                     onItemSelected = onItemSelected,
                     onToggleFavorite = { albumId -> viewModel.toggleFavorite(albumId) }
                 )
@@ -74,10 +78,12 @@ private fun AlbumsLoading(paddingValues: PaddingValues) {
 private fun AlbumsSuccess(
     albums: List<AlbumDto>,
     paddingValues: PaddingValues,
+    listState: LazyListState,
     onItemSelected: (AlbumDto) -> Unit,
     onToggleFavorite: (Int) -> Unit
 ) {
     LazyColumn(
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = paddingValues,
     ) {
@@ -157,6 +163,7 @@ private fun AlbumsSuccessPreview() {
                 )
             ),
             paddingValues = PaddingValues(0.dp),
+            listState = rememberLazyListState(),
             onItemSelected = {},
             onToggleFavorite = {}
         )

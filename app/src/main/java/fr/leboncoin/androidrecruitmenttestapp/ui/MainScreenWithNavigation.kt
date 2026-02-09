@@ -1,6 +1,7 @@
 package fr.leboncoin.androidrecruitmenttestapp.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,6 +33,8 @@ fun MainScreenWithNavigation(
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val albumsListState = rememberLazyListState()
+    val favoritesListState = rememberLazyListState()
 
     val items = listOf(BottomNavItem.Albums, BottomNavItem.Favorites)
 
@@ -59,11 +62,13 @@ fun MainScreenWithNavigation(
             0 -> AlbumsScreen(
                 viewModel = viewModel,
                 onItemSelected = onItemSelected,
+                listState = albumsListState,
                 modifier = Modifier.padding(paddingValues)
             )
             1 -> FavoritesScreen(
                 viewModel = viewModel,
                 onItemSelected = onItemSelected,
+                listState = favoritesListState,
                 modifier = Modifier.padding(paddingValues)
             )
         }
