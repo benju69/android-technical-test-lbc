@@ -27,7 +27,7 @@ class AnalyticsHelper {
     }
 
     fun trackScreenView(screenName: String) {
-        val context = appContext ?: run {
+        appContext ?: run {
             Log.w(TAG, "Analytics not initialized, skipping trackScreenView")
             return
         }

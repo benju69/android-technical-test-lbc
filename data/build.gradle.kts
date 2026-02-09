@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -45,6 +46,10 @@ android {
         implementation(libs.okhttp.logging)
 
         implementation(libs.kotlin.serialization.json)
+
+        // Hilt
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.compiler)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit) // Useless dependency

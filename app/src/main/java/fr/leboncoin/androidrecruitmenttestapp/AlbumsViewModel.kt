@@ -1,14 +1,15 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface AlbumsUiState {
     data object Loading : AlbumsUiState
@@ -16,7 +17,8 @@ sealed interface AlbumsUiState {
     data class Error(val message: String) : AlbumsUiState
 }
 
-class AlbumsViewModel(
+@HiltViewModel
+class AlbumsViewModel @Inject constructor(
     private val repository: AlbumRepository,
 ) : ViewModel() {
 
@@ -38,15 +40,6 @@ class AlbumsViewModel(
                     "Something happened: ${e.message}"
                 )
             }
-        }
-    }
-
-    class Factory(
-        private val repository: AlbumRepository,
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AlbumsViewModel(repository) as T
         }
     }
 }
