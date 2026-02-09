@@ -23,7 +23,6 @@ class DetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        analyticsHelper.initialize(this)
         analyticsHelper.trackScreenView("Details")
 
         setContent {

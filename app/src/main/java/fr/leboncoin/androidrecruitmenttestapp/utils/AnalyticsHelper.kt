@@ -1,31 +1,43 @@
 package fr.leboncoin.androidrecruitmenttestapp.utils
 
 import android.content.Context
+import android.util.Log
 import androidx.core.content.edit
 
 class AnalyticsHelper {
 
-    private var context: Context? = null
+    private var appContext: Context? = null
 
     fun initialize(context: Context) {
-        this.context = context
+        // Use applicationContext (to avoid memory leaks)
+        this.appContext = context.applicationContext
     }
 
     fun trackSelection(itemId: String) {
-        context?.let { activity ->
-            val prefs = activity.getSharedPreferences(ANALYTICS_SHARED_PREFS, Context.MODE_PRIVATE)
-            prefs.edit { putString(SELECTED_ITEM_KEY, itemId) }
-
-            // Simulate some analytics logging
-            println("Analytics: User selected item - $itemId")
+        val context = appContext ?: run {
+            Log.w(TAG, "Analytics not initialized, skipping trackSelection")
+            return
         }
+
+        val prefs = context.getSharedPreferences(ANALYTICS_SHARED_PREFS, Context.MODE_PRIVATE)
+        prefs.edit { putString(SELECTED_ITEM_KEY, itemId) }
+
+        // Simulate some analytics logging
+        Log.d(TAG, "Analytics: User selected item - $itemId")
     }
 
     fun trackScreenView(screenName: String) {
-        context?.let {
-            // Simulate some analytics logging
-            println("Analytics: Screen viewed - $screenName")
+        val context = appContext ?: run {
+            Log.w(TAG, "Analytics not initialized, skipping trackScreenView")
+            return
         }
+
+        // Simulate some analytics logging
+        Log.d(TAG, "Analytics: Screen viewed - $screenName")
+    }
+
+    companion object {
+        private const val TAG = "AnalyticsHelper"
     }
 }
 
