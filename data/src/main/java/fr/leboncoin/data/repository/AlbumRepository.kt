@@ -100,10 +100,57 @@ class AlbumRepository(
     }
 
     /**
+     * Observes an album by its ID from cache
+     */
+    fun observeAlbumById(id: Int): Flow<AlbumDto?> {
+        return albumDao.observeAlbumById(id).map { it?.toDto() }
+    }
+
+    /**
      * Checks if data is cached
      */
     suspend fun hasCachedData(): Boolean {
         return albumDao.getAlbumsCount() > 0
+    }
+
+    /**
+     * Toggles favorite status for an album
+     */
+    suspend fun toggleFavorite(id: Int): Result<Boolean> {
+        return try {
+            val currentStatus = albumDao.isFavorite(id) ?: false
+            val newStatus = !currentStatus
+            albumDao.updateFavoriteStatus(id, newStatus)
+            Result.success(newStatus)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Sets favorite status for an album
+     */
+    suspend fun setFavorite(id: Int, isFavorite: Boolean): Result<Unit> {
+        return try {
+            albumDao.updateFavoriteStatus(id, isFavorite)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Gets all favorite albums
+     */
+    fun getFavoriteAlbums(): Flow<List<AlbumDto>> {
+        return albumDao.getFavoriteAlbums().map { it.toDtoList() }
+    }
+
+    /**
+     * Checks if an album is favorite
+     */
+    suspend fun isFavorite(id: Int): Boolean {
+        return albumDao.isFavorite(id) ?: false
     }
 }
 

@@ -17,12 +17,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
@@ -31,14 +33,39 @@ import coil3.request.crossfade
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.chips.ChipTinted
+import com.adevinta.spark.components.icons.Icon as SparkIcon
+import com.adevinta.spark.icons.BookmarkFill
+import com.adevinta.spark.icons.BookmarkOutline
+import com.adevinta.spark.icons.SparkIcons
+import fr.leboncoin.androidrecruitmenttestapp.DetailsViewModel
 import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.data.network.model.AlbumDto
 
 @OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
+    viewModel: DetailsViewModel,
+    onBackClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    val album by viewModel.album.collectAsStateWithLifecycle()
+
+    album?.let { currentAlbum ->
+        DetailsScreenContent(
+            album = currentAlbum,
+            onBackClick = onBackClick,
+            onToggleFavorite = { viewModel.toggleFavorite() },
+            modifier = modifier
+        )
+    }
+}
+
+@OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun DetailsScreenContent(
     album: AlbumDto,
     onBackClick: () -> Unit = {},
+    onToggleFavorite: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -49,8 +76,24 @@ fun DetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            painter = painterResource(id = R.drawable.outline_arrow_back_24),
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onToggleFavorite) {
+                        SparkIcon(
+                            sparkIcon = if (album.isFavorite) {
+                                SparkIcons.BookmarkFill
+                            } else {
+                                SparkIcons.BookmarkOutline
+                            },
+                            contentDescription = if (album.isFavorite) {
+                                "Remove from favorites"
+                            } else {
+                                "Add to favorites"
+                            }
                         )
                     }
                 }
@@ -76,8 +119,8 @@ fun DetailsScreen(
                     .crossfade(true)
                     .build(),
                 contentDescription = album.title,
-                error = painterResource(R.drawable.error_24px),
-                placeholder = painterResource(R.drawable.outline_image_24),
+                error = painterResource(R.drawable.ic_error),
+                placeholder = painterResource(R.drawable.ic_image),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(350.dp),
@@ -140,13 +183,31 @@ private fun DetailRow(label: String, value: String) {
 @Composable
 private fun DetailsScreenPreview() {
     SparkTheme {
-        DetailsScreen(
+        DetailsScreenContent(
             album = AlbumDto(
                 albumId = 1,
                 id = 1,
                 title = "accusamus beatae ad facilis cum similique qui sunt",
                 url = "https://placehold.co/600x600/92c952/white/png",
-                thumbnailUrl = "https://placehold.co/150x150/92c952/white/png"
+                thumbnailUrl = "https://placehold.co/150x150/92c952/white/png",
+                isFavorite = false
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailsScreenFavoritePreview() {
+    SparkTheme {
+        DetailsScreenContent(
+            album = AlbumDto(
+                albumId = 1,
+                id = 1,
+                title = "accusamus beatae ad facilis cum similique qui sunt",
+                url = "https://placehold.co/600x600/92c952/white/png",
+                thumbnailUrl = "https://placehold.co/150x150/92c952/white/png",
+                isFavorite = true
             )
         )
     }

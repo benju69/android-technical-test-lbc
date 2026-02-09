@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +28,10 @@ import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
+import com.adevinta.spark.components.iconbuttons.IconButtonGhost
+import com.adevinta.spark.icons.BookmarkFill
+import com.adevinta.spark.icons.BookmarkOutline
+import com.adevinta.spark.icons.SparkIcons
 import fr.leboncoin.data.network.model.AlbumDto
 
 @OptIn(ExperimentalSparkApi::class)
@@ -34,6 +39,7 @@ import fr.leboncoin.data.network.model.AlbumDto
 fun AlbumItem(
     album: AlbumDto,
     onItemSelected : (AlbumDto) -> Unit,
+    onToggleFavorite: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -55,7 +61,7 @@ fun AlbumItem(
                     .crossfade(true)
                     .build(),
                 contentDescription = album.title,
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxHeight()
                     .aspectRatio(1f),
                 contentScale = ContentScale.Crop
@@ -63,15 +69,39 @@ fun AlbumItem(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(14.dp),
             ) {
-                Text(
-                    text = album.title,
-                    style = SparkTheme.typography.caption,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = album.title,
+                        style = SparkTheme.typography.caption,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    IconButtonGhost(
+                        icon = if (album.isFavorite) {
+                            SparkIcons.BookmarkFill
+                        } else {
+                            SparkIcons.BookmarkOutline
+                        },
+                        contentDescription = if (album.isFavorite) {
+                            "Remove from favorites"
+                        } else {
+                            "Add to favorites"
+                        },
+                        onClick = {
+                            onToggleFavorite(album.id)
+                        },
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
                 Spacer(Modifier.weight(1f))
 
@@ -101,9 +131,11 @@ private fun AlbumItemPreview() {
                 id = 1,
                 title = "accusamus beatae ad facilis cum similique qui sunt",
                 url = "",
-                thumbnailUrl = ""
+                thumbnailUrl = "",
+                isFavorite = false
             ),
-            onItemSelected = {}
+            onItemSelected = {},
+            onToggleFavorite = {}
         )
     }
 }
@@ -118,9 +150,11 @@ private fun AlbumItemLongTitlePreview() {
                 id = 123,
                 title = "This is a very long title that should overflow and be truncated after two lines to demonstrate the ellipsis behavior",
                 url = "",
-                thumbnailUrl = ""
+                thumbnailUrl = "",
+                isFavorite = true
             ),
-            onItemSelected = {}
+            onItemSelected = {},
+            onToggleFavorite = {}
         )
     }
 }

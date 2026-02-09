@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -19,6 +21,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
+
+    private val viewModel: DetailsViewModel by viewModels()
 
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
@@ -39,8 +43,11 @@ class DetailsActivity : ComponentActivity() {
         setContent {
             SparkTheme {
                 if (album != null) {
+                    LaunchedEffect(album.id) {
+                        viewModel.setAlbum(album)
+                    }
                     DetailsScreen(
-                        album = album,
+                        viewModel = viewModel,
                         onBackClick = { finish() }
                     )
                 } else {

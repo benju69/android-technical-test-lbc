@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.adevinta.spark.SparkTheme
 import dagger.hilt.android.AndroidEntryPoint
-import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumsScreen
+import fr.leboncoin.androidrecruitmenttestapp.ui.MainScreenWithNavigation
 import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SparkTheme {
-                AlbumsScreen(
+                MainScreenWithNavigation(
                     viewModel = viewModel,
                     onItemSelected = { album ->
                         analyticsHelper.trackSelection(album.id.toString())

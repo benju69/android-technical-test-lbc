@@ -12,4 +12,5 @@ data class AlbumEntity(
     val url: String,
     val thumbnailUrl: String,
     val cachedAt: Long = System.currentTimeMillis(),
+    val isFavorite: Boolean = false,
 )

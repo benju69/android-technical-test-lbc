@@ -16,6 +16,9 @@ interface AlbumDao {
     @Query("SELECT * FROM albums WHERE id = :id")
     suspend fun getAlbumById(id: Int): AlbumEntity?
 
+    @Query("SELECT * FROM albums WHERE id = :id")
+    fun observeAlbumById(id: Int): Flow<AlbumEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlbums(albums: List<AlbumEntity>)
 
@@ -27,5 +30,14 @@ interface AlbumDao {
 
     @Query("SELECT cachedAt FROM albums LIMIT 1")
     suspend fun getCacheTimestamp(): Long?
+
+    @Query("UPDATE albums SET isFavorite = :isFavorite WHERE id = :id")
+    suspend fun updateFavoriteStatus(id: Int, isFavorite: Boolean)
+
+    @Query("SELECT * FROM albums WHERE isFavorite = 1 ORDER BY albumId ASC, id ASC")
+    fun getFavoriteAlbums(): Flow<List<AlbumEntity>>
+
+    @Query("SELECT isFavorite FROM albums WHERE id = :id")
+    suspend fun isFavorite(id: Int): Boolean?
 }
 

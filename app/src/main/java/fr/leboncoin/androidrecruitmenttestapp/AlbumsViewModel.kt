@@ -6,8 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +27,13 @@ class AlbumsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<AlbumsUiState>(AlbumsUiState.Loading)
     val uiState: StateFlow<AlbumsUiState> = _uiState.asStateFlow()
 
+    val favoriteAlbums: StateFlow<List<AlbumDto>> = repository.getFavoriteAlbums()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     init {
         loadAlbums()
     }
@@ -33,6 +42,7 @@ class AlbumsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AlbumsUiState.Loading
 
+            // First, try to load from cache with network refresh
             repository.getAlbumsWithCache().collect { result ->
                 result.fold(
                     onSuccess = { albums ->
@@ -46,6 +56,38 @@ class AlbumsViewModel @Inject constructor(
                 )
             }
         }
+
+        // Then observe cached data for real-time updates (like favorite changes)
+        viewModelScope.launch {
+            repository.getCachedAlbums().collect { albums ->
+                if (albums.isNotEmpty()) {
+                    _uiState.value = AlbumsUiState.Success(albums)
+                }
+            }
+        }
+    }
+
+    fun toggleFavorite(albumId: Int) {
+        viewModelScope.launch {
+            repository.toggleFavorite(albumId)
+                .onSuccess { isFavorite ->
+                    // Le statut a été mis à jour avec succès
+                    // L'UI sera automatiquement mise à jour via le Flow
+                }
+                .onFailure { error ->
+                    // Gérer l'erreur si nécessaire
+                }
+        }
+    }
+
+    fun setFavorite(albumId: Int, isFavorite: Boolean) {
+        viewModelScope.launch {
+            repository.setFavorite(albumId, isFavorite)
+        }
+    }
+
+    suspend fun isFavorite(albumId: Int): Boolean {
+        return repository.isFavorite(albumId)
     }
 
 }

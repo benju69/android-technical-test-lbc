@@ -9,7 +9,8 @@ fun AlbumDto.toEntity(): AlbumEntity {
         albumId = albumId,
         title = title,
         url = url,
-        thumbnailUrl = thumbnailUrl
+        thumbnailUrl = thumbnailUrl,
+        isFavorite = isFavorite
     )
 }
 
@@ -19,7 +20,8 @@ fun AlbumEntity.toDto(): AlbumDto {
         albumId = albumId,
         title = title,
         url = url,
-        thumbnailUrl = thumbnailUrl
+        thumbnailUrl = thumbnailUrl,
+        isFavorite = isFavorite
     )
 }
 

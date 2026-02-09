@@ -21,7 +21,90 @@
 - Utilisation de `@Inject` pour l'injection des dépendances
 - Utilisation de `@AndroidEntryPoint` pour les points d'entrée d'Android (Activities/Fragment)
 
-## 2. Tests
+## 2. Persistence locale - Room
+
+**Choix** : Utilisation de **Room** comme solution de persistence locale pour le cache des données.
+
+**Justification** :
+
+### Avantages techniques
+- **Abstraction SQLite** : Couche d'abstraction au-dessus de SQLite avec vérification à la compilation
+- **Type-safety** : Détection des erreurs SQL à la compilation grâce aux annotations et au code généré
+- **Intégration Kotlin Coroutines/Flow** : Support natif pour les opérations asynchrones et réactives
+  - `Flow<List<AlbumEntity>>` pour observer les changements en temps réel
+  - `suspend fun` pour les opérations asynchrones sans bloquer le thread UI
+- **Migration simplifiée** : Gestion automatique des migrations de base de données
+- **Performance optimale** : Requêtes compilées et mises en cache, indexation automatique sur les clés primaires
+
+### Architecture mise en place
+
+**Entités** :
+```kotlin
+@Entity(tableName = "albums")
+data class AlbumEntity(
+    @PrimaryKey val id: Int,
+    val albumId: Int,
+    val title: String,
+    val url: String,
+    val thumbnailUrl: String,
+    val isFavorite: Boolean = false,
+    val timestamp: Long = System.currentTimeMillis()
+)
+```
+
+**DAO (Data Access Object)** :
+- **Requêtes réactives** : `getAllAlbums(): Flow<List<AlbumEntity>>` pour observer les changements
+- **Opérations CRUD** : Insert, Update, Delete avec `@Insert`, `@Update`, `@Query`
+- **Requêtes spécifiques** : 
+  - `getFavoriteAlbums()` pour filtrer les favoris
+  - `isFavorite(id: Int)` pour vérifier le statut
+  - `updateFavoriteStatus(id: Int, isFavorite: Boolean)` pour modifier l'état favori
+
+**Database** :
+```kotlin
+@Database(entities = [AlbumEntity::class], version = 1)
+abstract class AlbumDatabase : RoomDatabase()
+```
+
+### Stratégie Offline-First implémentée
+
+1. **Cache prioritaire** : 
+   - L'app affiche d'abord les données en cache (instantané)
+   - Rafraîchit en arrière-plan depuis le réseau
+   
+2. **Gestion de la fraîcheur** :
+   - Cache valide pendant 1 heure (`CACHE_DURATION_MS`)
+   - Timestamp automatique à chaque insertion
+   
+3. **Résilience** :
+   - Si le réseau échoue, utilise le cache même expiré
+   - L'utilisateur voit toujours du contenu (UX améliorée)
+
+4. **Réactivité temps réel** :
+   - Les changements (favoris) se propagent automatiquement via `Flow`
+   - UI mise à jour instantanément sans reload manuel
+   - Pattern "Single Source of Truth" : la DB est la source de vérité
+
+### Bénéfices pour les fonctionnalités
+
+**Favoris** :
+- État persisté localement même après fermeture de l'app
+- Mise à jour instantanée dans toutes les vues grâce aux `Flow`
+- Pas besoin de recharger la liste après toggle favori
+
+**Performance** :
+- Démarrage ultra-rapide (affichage du cache)
+- Pas de spinner pendant le chargement réseau (si cache présent)
+- Scroll fluide (données locales, pas de latence réseau)
+
+**Mode hors-ligne** :
+- Application utilisable sans connexion internet
+- Données consultables même en avion/métro
+- Favoris fonctionnent toujours
+
+**Conclusion** : Room est le choix optimal pour cette app car il combine type-safety, réactivité (`Flow`), intégration Jetpack, et simplicité d'implémentation.
+
+## 3. Tests
 
 **Choix** : Stratégie de test complète avec tests unitaires et tests UI instrumentés.
 
