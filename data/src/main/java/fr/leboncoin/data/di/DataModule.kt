@@ -29,9 +29,9 @@ class DataDependencies {
 
     private val okHttpClient: OkHttpClient by lazy {
         val builder = OkHttpClient.Builder()
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                level = HttpLoggingInterceptor.Level.HEADERS // No need to display the full big body in the logcat
             }
             builder.addInterceptor(loggingInterceptor)
         }
