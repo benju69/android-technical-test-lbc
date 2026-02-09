@@ -28,10 +28,23 @@ class AlbumsViewModelTest {
     val fakeDao = object : AlbumDao {
         override fun getAllAlbums(): Flow<List<AlbumEntity>> = flowOf(emptyList())
         override suspend fun getAlbumById(id: Int): AlbumEntity? = null
+        override fun observeAlbumById(id: Int): Flow<AlbumEntity?> {
+            return flowOf(null)
+        }
+
         override suspend fun insertAlbums(albums: List<AlbumEntity>) {}
         override suspend fun clearAllAlbums() {}
         override suspend fun getAlbumsCount(): Int = 0
         override suspend fun getCacheTimestamp(): Long? = null
+        override suspend fun updateFavoriteStatus(id: Int, isFavorite: Boolean) {}
+
+        override fun getFavoriteAlbums(): Flow<List<AlbumEntity>> {
+            return flowOf(emptyList())
+        }
+
+        override suspend fun isFavorite(id: Int): Boolean {
+            return false
+        }
     }
 
     @Before
