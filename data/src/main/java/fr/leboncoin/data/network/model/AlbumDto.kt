@@ -1,7 +1,10 @@
 package fr.leboncoin.data.network.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class AlbumDto(
     val id: Int,
@@ -9,4 +12,4 @@ data class AlbumDto(
     val title: String,
     val url: String,
     val thumbnailUrl: String
-)
+) : Parcelable

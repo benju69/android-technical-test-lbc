@@ -28,9 +28,12 @@ class MainActivity : ComponentActivity() {
             SparkTheme {
                 AlbumsScreen(
                     viewModel = viewModel,
-                    onItemSelected = {
-                        analyticsHelper.trackSelection(it.id.toString())
-                        startActivity(Intent(this, DetailsActivity::class.java))
+                    onItemSelected = { album ->
+                        analyticsHelper.trackSelection(album.id.toString())
+                        val intent = Intent(this, DetailsActivity::class.java).apply {
+                            putExtra(DetailsActivity.EXTRA_ALBUM, album)
+                        }
+                        startActivity(intent)
                     }
                 )
             }
