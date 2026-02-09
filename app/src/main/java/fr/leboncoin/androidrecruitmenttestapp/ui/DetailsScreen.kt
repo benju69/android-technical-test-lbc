@@ -76,6 +76,8 @@ fun DetailsScreen(
                     .crossfade(true)
                     .build(),
                 contentDescription = album.title,
+                error = painterResource(R.drawable.error_24px),
+                placeholder = painterResource(R.drawable.outline_image_24),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(350.dp),
