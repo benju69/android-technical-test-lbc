@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.data.local.dao.AlbumDao
 import fr.leboncoin.data.network.api.AlbumApiService
 import fr.leboncoin.data.repository.AlbumRepository
 import javax.inject.Singleton
@@ -15,9 +16,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAlbumRepository(
-        albumApiService: AlbumApiService
+        albumApiService: AlbumApiService,
+        albumDao: AlbumDao
     ): AlbumRepository {
-        return AlbumRepository(albumApiService)
+        return AlbumRepository(albumApiService, albumDao)
     }
 }
 

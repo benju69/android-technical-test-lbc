@@ -32,14 +32,20 @@ class AlbumsViewModel @Inject constructor(
     fun loadAlbums() {
         viewModelScope.launch {
             _uiState.value = AlbumsUiState.Loading
-            try {
-                val albums = repository.getAllAlbums()
-                _uiState.value = AlbumsUiState.Success(albums)
-            } catch (e: Exception) {
-                _uiState.value = AlbumsUiState.Error(
-                    "Something happened: ${e.message}"
+
+            repository.getAlbumsWithCache().collect { result ->
+                result.fold(
+                    onSuccess = { albums ->
+                        _uiState.value = AlbumsUiState.Success(albums)
+                    },
+                    onFailure = { e ->
+                        _uiState.value = AlbumsUiState.Error(
+                            "Something happened: ${e.message}"
+                        )
+                    }
                 )
             }
         }
     }
+
 }
