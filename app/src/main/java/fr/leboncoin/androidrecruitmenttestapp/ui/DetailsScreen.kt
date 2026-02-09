@@ -84,15 +84,13 @@ fun DetailsScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Title
             Text(
                 text = album.title,
                 style = SparkTheme.typography.headline1,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Informations
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -104,9 +102,8 @@ fun DetailsScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Détails supplémentaires
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
