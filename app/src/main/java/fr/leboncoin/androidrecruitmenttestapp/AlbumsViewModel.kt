@@ -70,13 +70,6 @@ class AlbumsViewModel @Inject constructor(
     fun toggleFavorite(albumId: Int) {
         viewModelScope.launch {
             repository.toggleFavorite(albumId)
-                .onSuccess { isFavorite ->
-                    // Le statut a été mis à jour avec succès
-                    // L'UI sera automatiquement mise à jour via le Flow
-                }
-                .onFailure { error ->
-                    // Gérer l'erreur si nécessaire
-                }
         }
     }
 
