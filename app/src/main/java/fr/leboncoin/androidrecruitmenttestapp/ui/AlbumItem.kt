@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -42,12 +43,22 @@ fun AlbumItem(
     onToggleFavorite: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val onClickStable = remember(album.id) { { onItemSelected(album) } }
+    val onToggleFavoriteStable = remember(album.id) { { onToggleFavorite(album.id) } }
+
+    val favoriteIcon = remember(album.isFavorite) {
+        if (album.isFavorite) SparkIcons.BookmarkFill else SparkIcons.BookmarkOutline
+    }
+    val favoriteContentDescription = remember(album.isFavorite) {
+        if (album.isFavorite) "Remove from favorites" else "Add to favorites"
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .height(120.dp)
             .padding(horizontal = 16.dp),
-        onClick = { onItemSelected(album) },
+        onClick = onClickStable,
     ) {
         Row {
             AsyncImage(
@@ -58,7 +69,6 @@ fun AlbumItem(
                             .add("User-Agent", "LeboncoinApp/1.0")
                             .build()
                     )
-                    .crossfade(true)
                     .build(),
                 contentDescription = album.title,
                 modifier = Modifier
@@ -86,19 +96,9 @@ fun AlbumItem(
                     )
 
                     IconButtonGhost(
-                        icon = if (album.isFavorite) {
-                            SparkIcons.BookmarkFill
-                        } else {
-                            SparkIcons.BookmarkOutline
-                        },
-                        contentDescription = if (album.isFavorite) {
-                            "Remove from favorites"
-                        } else {
-                            "Add to favorites"
-                        },
-                        onClick = {
-                            onToggleFavorite(album.id)
-                        },
+                        icon = favoriteIcon,
+                        contentDescription = favoriteContentDescription,
+                        onClick = onToggleFavoriteStable,
                         modifier = Modifier.size(24.dp)
                     )
                 }
