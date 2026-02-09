@@ -86,7 +86,7 @@ L'architecture 2-modules (app + data) est **parfaitement adaptée** au scope du 
 
 ## 🔮 Roadmap des Évolutions Futures
 
-### Phase 1 : Amélioration UX 
+### 1 : Amélioration UX 
 
 #### A. Recherche et Filtres
 ```kotlin
@@ -117,4 +117,61 @@ PullToRefreshBox(
 - Messages d'erreur contextuels (réseau vs serveur)
 - Bouton "Paramètres" pour activer le réseau
 
+### D. UI
+- Support du Dark mode
+- Support paysage
+- Amélioration de la mise en page (grille, titres longs)
+- 
 ---
+
+### 2 : Analytics et Monitoring
+
+#### A. Tracking des Événements
+```kotlin
+analyticsHelper.logEvent("album_viewed", mapOf("album_id" to album.id))
+analyticsHelper.logEvent("favorite_toggled", mapOf("is_favorite" to isFavorite))
+analyticsHelper.logEvent("scroll_performance", mapOf("fps" to frameRate))
+```
+
+#### B. Crash Reporting
+```kotlin
+// Firebase Crashlytics
+implementation("com.google.firebase:firebase-crashlytics-ktx")
+```
+
+#### C. Performance Monitoring
+```kotlin
+// Firebase Performance
+val trace = Firebase.performance.newTrace("load_albums_trace")
+trace.start()
+repository.getAlbumsWithCache().collect { /* ... */ }
+trace.stop()
+```
+
+**Bénéfices** : Détection proactive des problèmes en production.
+
+---
+
+### 3 : Fonctionnalités Sociales
+
+#### A. Partage d'Albums
+```kotlin
+fun shareAlbum(album: AlbumDto, context: Context) {
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "Check out: ${album.title}\n${album.url}")
+        type = "text/plain"
+    }
+    context.startActivity(Intent.createChooser(shareIntent, null))
+}
+```
+
+#### B. Collections Personnalisées
+
+**Bénéfices** : Engagement utilisateur accru.
+
+---
+
+### Phase 4 : Offline-First Avancé
+
+#### Synchronisation en Arrière-Plan par exemple avec WorkManager
