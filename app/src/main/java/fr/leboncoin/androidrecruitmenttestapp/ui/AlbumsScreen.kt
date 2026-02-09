@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.scaffold.Scaffold
 import com.adevinta.spark.components.text.Text
@@ -114,3 +116,58 @@ private fun AlbumsError(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun AlbumsLoadingPreview() {
+    SparkTheme {
+        AlbumsLoading(paddingValues = PaddingValues(0.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AlbumsSuccessPreview() {
+    SparkTheme {
+        AlbumsSuccess(
+            albums = listOf(
+                AlbumDto(
+                    albumId = 1,
+                    id = 1,
+                    title = "accusamus beatae ad facilis cum similique qui sunt",
+                    url = "",
+                    thumbnailUrl = ""
+                ),
+                AlbumDto(
+                    albumId = 1,
+                    id = 2,
+                    title = "reprehenderit est deserunt velit ipsam",
+                    url = "",
+                    thumbnailUrl = ""
+                ),
+                AlbumDto(
+                    albumId = 1,
+                    id = 3,
+                    title = "officia porro iure quia iusto qui ipsa ut modi",
+                    url = "",
+                    thumbnailUrl = ""
+                )
+            ),
+            paddingValues = PaddingValues(0.dp),
+            onItemSelected = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AlbumsErrorPreview() {
+    SparkTheme {
+        AlbumsError(
+            message = "Network connection failed",
+            paddingValues = PaddingValues(0.dp),
+            onRetry = {}
+        )
+    }
+}
+
