@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.androidrecruitmenttestapp.feature.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +20,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.scaffold.Scaffold
 import com.adevinta.spark.components.text.Text
-import fr.leboncoin.androidrecruitmenttestapp.AlbumsViewModel
+import fr.leboncoin.androidrecruitmenttestapp.feature.albums.AlbumItem
+import fr.leboncoin.androidrecruitmenttestapp.feature.albums.AlbumsViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 
 @Composable
@@ -77,7 +78,7 @@ private fun FavoritesList(
     paddingValues: PaddingValues,
     listState: LazyListState,
     onItemSelected: (AlbumDto) -> Unit,
-    onToggleFavorite: (Int) -> Unit
+    onToggleFavorite: (Int) -> Unit,
 ) {
     LazyColumn(
         state = listState,

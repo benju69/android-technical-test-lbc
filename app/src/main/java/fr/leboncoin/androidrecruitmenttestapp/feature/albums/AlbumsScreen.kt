@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.androidrecruitmenttestapp.feature.albums
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,11 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.buttons.ButtonFilled
+import com.adevinta.spark.components.progress.Spinner
 import com.adevinta.spark.components.scaffold.Scaffold
 import com.adevinta.spark.components.text.Text
-import com.adevinta.spark.components.progress.Spinner
-import fr.leboncoin.androidrecruitmenttestapp.AlbumsUiState
-import fr.leboncoin.androidrecruitmenttestapp.AlbumsViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 
 @Composable
@@ -34,6 +34,7 @@ fun AlbumsScreen(
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     Scaffold(modifier = modifier) { paddingValues ->
         when (val state = uiState) {
@@ -46,6 +47,8 @@ fun AlbumsScreen(
                     albums = state.albums,
                     paddingValues = paddingValues,
                     listState = listState,
+                    isRefreshing = isRefreshing,
+                    onRefresh = { viewModel.refreshAlbums() },
                     onItemSelected = onItemSelected,
                     onToggleFavorite = { albumId -> viewModel.toggleFavorite(albumId) }
                 )
@@ -74,28 +77,38 @@ private fun AlbumsLoading(paddingValues: PaddingValues) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlbumsSuccess(
     albums: List<AlbumDto>,
     paddingValues: PaddingValues,
     listState: LazyListState,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onItemSelected: (AlbumDto) -> Unit,
-    onToggleFavorite: (Int) -> Unit
+    onToggleFavorite: (Int) -> Unit,
 ) {
-    LazyColumn(
-        state = listState,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = paddingValues,
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
     ) {
-        items(
-            items = albums,
-            key = { album -> album.id }
-        ) { album ->
-            AlbumItem(
-                album = album,
-                onItemSelected = onItemSelected,
-                onToggleFavorite = onToggleFavorite
-            )
+        LazyColumn(
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            items(
+                items = albums,
+                key = { album -> album.id }
+            ) { album ->
+                AlbumItem(
+                    album = album,
+                    onItemSelected = onItemSelected,
+                    onToggleFavorite = onToggleFavorite
+                )
+            }
         }
     }
 }
@@ -104,7 +117,7 @@ private fun AlbumsSuccess(
 private fun AlbumsError(
     message: String,
     paddingValues: PaddingValues,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -154,16 +167,11 @@ private fun AlbumsSuccessPreview() {
                     url = "",
                     thumbnailUrl = ""
                 ),
-                AlbumDto(
-                    albumId = 1,
-                    id = 3,
-                    title = "officia porro iure quia iusto qui ipsa ut modi",
-                    url = "",
-                    thumbnailUrl = ""
-                )
             ),
             paddingValues = PaddingValues(0.dp),
             listState = rememberLazyListState(),
+            isRefreshing = false,
+            onRefresh = {},
             onItemSelected = {},
             onToggleFavorite = {}
         )

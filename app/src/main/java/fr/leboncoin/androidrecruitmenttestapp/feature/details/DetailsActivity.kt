@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp
+package fr.leboncoin.androidrecruitmenttestapp.feature.details
 
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.image.Illustration
 import dagger.hilt.android.AndroidEntryPoint
-import fr.leboncoin.androidrecruitmenttestapp.ui.DetailsScreen
+import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
 import fr.leboncoin.data.network.model.AlbumDto
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.androidrecruitmenttestapp.feature.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,6 @@ import com.adevinta.spark.components.icons.Icon as SparkIcon
 import com.adevinta.spark.icons.BookmarkFill
 import com.adevinta.spark.icons.BookmarkOutline
 import com.adevinta.spark.icons.SparkIcons
-import fr.leboncoin.androidrecruitmenttestapp.DetailsViewModel
 import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.data.network.model.AlbumDto
 
@@ -46,7 +45,7 @@ import fr.leboncoin.data.network.model.AlbumDto
 fun DetailsScreen(
     viewModel: DetailsViewModel,
     onBackClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val album by viewModel.album.collectAsStateWithLifecycle()
 
@@ -70,7 +69,7 @@ fun DetailsScreen(
     album: AlbumDto,
     onBackClick: () -> Unit = {},
     onToggleFavorite: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailsScreenContent(
         album = album,
@@ -86,7 +85,7 @@ private fun DetailsScreenContent(
     album: AlbumDto,
     onBackClick: () -> Unit = {},
     onToggleFavorite: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -159,12 +158,8 @@ private fun DetailsScreenContent(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ChipTinted(
-                    text = "Album #${album.albumId}"
-                )
-                ChipTinted(
-                    text = "Track #${album.id}"
-                )
+                ChipTinted(text = "Album #${album.albumId}")
+                ChipTinted(text = "Track #${album.id}")
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -232,3 +227,4 @@ private fun DetailsScreenFavoritePreview() {
         )
     }
 }
+

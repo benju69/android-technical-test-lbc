@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.adevinta.spark.SparkTheme
+import fr.leboncoin.androidrecruitmenttestapp.feature.albums.AlbumItem
 import fr.leboncoin.data.network.model.AlbumDto
 import org.junit.Rule
 import org.junit.Test

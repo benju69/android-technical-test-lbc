@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.androidrecruitmenttestapp.feature.albums
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,6 @@ import coil3.compose.AsyncImage
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
@@ -39,7 +38,7 @@ import fr.leboncoin.data.network.model.AlbumDto
 @Composable
 fun AlbumItem(
     album: AlbumDto,
-    onItemSelected : (AlbumDto) -> Unit,
+    onItemSelected: (AlbumDto) -> Unit,
     onToggleFavorite: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {

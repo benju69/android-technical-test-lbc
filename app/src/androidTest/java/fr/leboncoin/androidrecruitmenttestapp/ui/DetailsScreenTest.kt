@@ -10,6 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.adevinta.spark.SparkTheme
+import fr.leboncoin.androidrecruitmenttestapp.feature.details.DetailsScreen
 import fr.leboncoin.data.network.model.AlbumDto
 import org.junit.Rule
 import org.junit.Test

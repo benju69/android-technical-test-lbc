@@ -1,5 +1,7 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
+import fr.leboncoin.androidrecruitmenttestapp.feature.albums.AlbumsUiState
+import fr.leboncoin.androidrecruitmenttestapp.feature.albums.AlbumsViewModel
 import fr.leboncoin.data.local.dao.AlbumDao
 import fr.leboncoin.data.local.entity.AlbumEntity
 import fr.leboncoin.data.network.api.AlbumApiService

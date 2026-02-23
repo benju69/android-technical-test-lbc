@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp
+package fr.leboncoin.androidrecruitmenttestapp.feature.albums
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,12 +13,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed interface AlbumsUiState {
-    data object Loading : AlbumsUiState
-    data class Success(val albums: List<AlbumDto>) : AlbumsUiState
-    data class Error(val message: String) : AlbumsUiState
-}
-
 @HiltViewModel
 class AlbumsViewModel @Inject constructor(
     private val repository: AlbumRepository,
@@ -26,6 +20,9 @@ class AlbumsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<AlbumsUiState>(AlbumsUiState.Loading)
     val uiState: StateFlow<AlbumsUiState> = _uiState.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     val favoriteAlbums: StateFlow<List<AlbumDto>> = repository.getFavoriteAlbums()
         .stateIn(
@@ -42,7 +39,6 @@ class AlbumsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AlbumsUiState.Loading
 
-            // First, try to load from cache with network refresh
             repository.getAlbumsWithCache().collect { result ->
                 result.fold(
                     onSuccess = { albums ->
@@ -57,13 +53,21 @@ class AlbumsViewModel @Inject constructor(
             }
         }
 
-        // Then observe cached data for real-time updates (like favorite changes)
+        // Observe cached data for real-time updates (like favorite changes)
         viewModelScope.launch {
             repository.getCachedAlbums().collect { albums ->
                 if (albums.isNotEmpty()) {
                     _uiState.value = AlbumsUiState.Success(albums)
                 }
             }
+        }
+    }
+
+    fun refreshAlbums() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            repository.refreshAlbums()
+            _isRefreshing.value = false
         }
     }
 
@@ -82,5 +86,5 @@ class AlbumsViewModel @Inject constructor(
     suspend fun isFavorite(albumId: Int): Boolean {
         return repository.isFavorite(albumId)
     }
-
 }
+

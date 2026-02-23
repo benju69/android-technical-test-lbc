@@ -1,10 +1,11 @@
-package fr.leboncoin.androidrecruitmenttestapp
+package fr.leboncoin.androidrecruitmenttestapp.feature.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,15 +28,10 @@ class DetailsViewModel @Inject constructor(
     val album: StateFlow<AlbumDto?> = _album.asStateFlow()
 
     init {
-        // Observe album changes based on the current album ID
         _albumId
             .filterNotNull()
-            .flatMapLatest { id ->
-                repository.observeAlbumById(id)
-            }
-            .onEach { updatedAlbum ->
-                _album.value = updatedAlbum
-            }
+            .flatMapLatest { id -> repository.observeAlbumById(id) }
+            .onEach { updatedAlbum -> _album.value = updatedAlbum }
             .launchIn(viewModelScope)
     }
 
@@ -52,4 +47,3 @@ class DetailsViewModel @Inject constructor(
         }
     }
 }
-

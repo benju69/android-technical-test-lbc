@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".DetailsActivity"
+            android:name=".feature.details.DetailsActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidRecruitmentTestApp" />
     </application>
