@@ -60,6 +60,26 @@ fun DetailsScreen(
     }
 }
 
+/**
+ * DetailsScreen overload that accepts an AlbumDto directly.
+ * Useful for previews and tests.
+ */
+@OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun DetailsScreen(
+    album: AlbumDto,
+    onBackClick: () -> Unit = {},
+    onToggleFavorite: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    DetailsScreenContent(
+        album = album,
+        onBackClick = onBackClick,
+        onToggleFavorite = onToggleFavorite,
+        modifier = modifier
+    )
+}
+
 @OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsScreenContent(

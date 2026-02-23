@@ -31,7 +31,11 @@ class AlbumItemTest {
     fun albumItem_displaysTitle() {
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = testAlbum, onItemSelected = {})
+                AlbumItem(
+                    album = testAlbum,
+                    onItemSelected = {},
+                    onToggleFavorite = {},
+                )
             }
         }
 
@@ -44,7 +48,11 @@ class AlbumItemTest {
     fun albumItem_displaysAlbumIdChip() {
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = testAlbum, onItemSelected = {})
+                AlbumItem(
+                    album = testAlbum,
+                    onItemSelected = {},
+                    onToggleFavorite = {},
+                )
             }
         }
 
@@ -57,7 +65,7 @@ class AlbumItemTest {
     fun albumItem_displaysTrackIdChip() {
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = testAlbum, onItemSelected = {})
+                AlbumItem(album = testAlbum, onItemSelected = {}, onToggleFavorite = {})
             }
         }
 
@@ -70,7 +78,9 @@ class AlbumItemTest {
     fun albumItem_displaysImageWithContentDescription() {
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = testAlbum, onItemSelected = {})
+                AlbumItem(
+                    album = testAlbum, onItemSelected = {}, onToggleFavorite = {},
+                )
             }
         }
 
@@ -83,7 +93,7 @@ class AlbumItemTest {
     fun albumItem_isClickable() {
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = testAlbum, onItemSelected = {})
+                AlbumItem(album = testAlbum, onItemSelected = {}, onToggleFavorite = {})
             }
         }
 
@@ -100,7 +110,7 @@ class AlbumItemTest {
 
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = longTitleAlbum, onItemSelected = {})
+                AlbumItem(album = longTitleAlbum, onItemSelected = {}, onToggleFavorite = {})
             }
         }
 
@@ -121,7 +131,7 @@ class AlbumItemTest {
 
         composeTestRule.setContent {
             SparkTheme {
-                AlbumItem(album = differentAlbum, onItemSelected = {})
+                AlbumItem(album = differentAlbum, onItemSelected = {}, onToggleFavorite = {})
             }
         }
 
